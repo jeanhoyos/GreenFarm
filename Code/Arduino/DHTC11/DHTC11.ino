@@ -14,19 +14,20 @@ void loop() {
   // put your main code here, to run repeatedly:
   
   // Serial.print("Temperature:"); 
-   byte temperature = 0;
-   byte humidity = 0;
+   byte temperature = 20;
+   byte humidity = 80;
    byte data[40] = {0};
    
-   if (dht11.read(pinDHT11, &temperature, &humidity, data)) {
-    Serial.println("Read DHT11 failed");
-    return;
-    }
-   temp=(int)temperature;
-   Serial.print(temp);
+   //if (dht11.read(pinDHT11, &temperature, &humidity, data)) {
+   //Serial.println("Read DHT11 failed");
+    //return;
+    //}
+    
+   //temp=(int)temperature;
+   Serial.print(temperature);
    Serial.print(',');
    Serial.print(humidity) ;
-   delay(1200);
+   delay(1000);
   
 
 }
