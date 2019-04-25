@@ -1,3 +1,6 @@
+#include <ArduinoNATS.h>
+
+
 char dataString[50] = {0};
 int a =0; 
 
@@ -10,4 +13,6 @@ void loop() {
   //sprintf(dataString,"%02X",a); // convert a value to hexa 
   Serial.println("a = " + a);   // send the data
   delay(10000);                  // give the loop some break
+  
+  
 }

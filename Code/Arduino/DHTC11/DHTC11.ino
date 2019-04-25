@@ -6,6 +6,7 @@ int temp=0;
 
 void setup() {
   // put your setup code here, to run once:
+   pinMode(2, OUTPUT);
    Serial.begin(9600);   //Sets the baud for serial data transmission 
 
 }
@@ -24,10 +25,18 @@ void loop() {
     //}
     
    //temp=(int)temperature;
-   Serial.print(temperature);
-   Serial.print(',');
-   Serial.print(humidity) ;
+  // Serial.print(temperature);
+  // Serial.print(',');
+  // Serial.print(humidity) ;
+  
+  
    delay(1000);
+   digitalWrite(2, HIGH); // sets the digital pin 13 on
+  delay(1000);            // waits for a second
+  digitalWrite(2, LOW);  // sets the digital pin 13 off
+  delay(1000);            // waits for a second
+  byte data_rasp = Serial.read();
+  Serial.print(data_rasp);
   
 
 }
