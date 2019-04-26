@@ -28,7 +28,7 @@ const char *pub_temp = "GreenFarm/Arduino/Temperature";
 const char *pub_hum = "GreenFarm/Arduino/Humidity";
 const char *pub_moist = "GreenFarm/Arduino/Moist";
 
-char *sub_window = "GreenFarm/Raspberry/Window";
+char *sub_window = "GreenFarm/Raspberry/Window  ";
 char *sub_pump = "GreenFarm/Raspberry/Pump";
 
 
@@ -94,8 +94,12 @@ void loop(){
 
  
   // Publish Temperature on Server"
-  int temp = 19;
-  if(mqttClient.publish(pub_temp, temp))
+  int temp = 20;
+  String temp_str = "";
+  temp_str = (String)temp;
+  char char_array[temp_str.length() + 1];
+  temp_str.toCharArray(char_array, temp_str.length() + 1);
+  if(mqttClient.publish(pub_temp, char_array))
   {
     Serial.println("published message");
   }
@@ -114,6 +118,14 @@ void loop(){
   
 }
 
+
+
+void pump_control(String data){
+     int pump_value = data.toInt();
+     Serial.println(pump_value);
+  
+  }
+
 void subscribeReceive(char* topic, byte* payload, unsigned int length)
 {
   // Print the topic
@@ -122,16 +134,20 @@ void subscribeReceive(char* topic, byte* payload, unsigned int length)
  
   // Print the message
   Serial.print("Received Message: ");
-  char *data = "";
+  //char *data = "";
+  String value = "";
   for(int i = 0; i < length; i ++)
   {
-    Serial.print(char(payload[i]));
-    data += char(payload[i]);
+    //Serial.print(char(payload[i]));
+    value += char(payload[i]);
   }
   Serial.println("");
+  Serial.print("Data = ");
+  Serial.println(value);
 
-  Serial.println(sub_pump);
+ 
   if (strcmp (topic,"GreenFarm/Raspberry/Pump") == 0){
+    pump_control(value);
     Serial.println("Received Pump order");
     }
   else if (strcmp (topic,"GreenFarm/Raspberry/Window") == 0){
