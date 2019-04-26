@@ -92,11 +92,18 @@ void loop(){
   mqttClient.subscribe(sub_pump);
   mqttClient.subscribe(sub_window);
 
+
+  // Soil Moisture
+
+  int sensorValue = analogRead(A0);
+  int sensorValue_map = map(sensorValue, 1023, 0, 0, 100);
+  // print out the value you read:
+  Serial.print(sensorValue_map);
+  Serial.println("%");
  
   // Publish Temperature on Server"
-  int temp = 20;
   String temp_str = "";
-  temp_str = (String)temp;
+  temp_str = (String)sensorValue_map;
   char char_array[temp_str.length() + 1];
   temp_str.toCharArray(char_array, temp_str.length() + 1);
   if(mqttClient.publish(pub_temp, char_array))
