@@ -4,6 +4,11 @@
 #include <Ethernet.h>
 #include <PubSubClient.h>
 
+//Raspberry command
+//mosquitto_pub -h test.mosquitto.org -t "MakerIOTopic/message" -m "Hello, world" -r -d 
+// mosquitto_sub -h 192.168.1.4 -t "Raspberry/Arduino"
+//mosquitto_pub -h 192.168.1.4 -t "GreenFarm/Raspberry" -m "RaspberryPublish" -r -d
+
 // Function prototypes
 void subscribeReceive(char* topic, byte* payload, unsigned int length);
  
@@ -11,13 +16,18 @@ void subscribeReceive(char* topic, byte* payload, unsigned int length);
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 // IP du shield run DHCPAdressPrinter
 
-IPAddress ip(192, 168, 1, 14);
+IPAddress ip(192, 168, 1, 21);
 
 //IPAddress ip(Ethernet.localIP());
  
 // Make sure to leave out the http and slashes!
 const char* server = "test.mosquitto.org";
+const char *serverHostname = "raspberrypi";
+const IPAddress serverIPAddress(192, 168, 1, 4);
+
+//"broker.example";
  //test.mosquitto.org/
+// MQTT.io
 // Ethernet and MQTT related objects
 EthernetClient ethClient;
 PubSubClient mqttClient(ethClient);
@@ -52,30 +62,23 @@ void setup(){
  
   // Set the MQTT server to the server stated above ^
   
-  mqttClient.setServer(server, 1883);   
+  mqttClient.setServer(serverIPAddress, 1883);
+
+
 
 
   Serial.println("Connecting ...");
   while (!mqttClient.connect("myClientID")) {
-    delay(5000);
+    delay(2000);
     Serial.println(Ethernet.localIP());
+    Serial.println(mqttClient.connect("myClientID"));
     Serial.println("be patient...");
   }
   Serial.println("Connected ! ");
-  
- 
-  // Attempt to connect to the server with the ID "myClientID"
-  if (mqttClient.connect("myClientID")) 
-  {
-    Serial.println("Connection has been established, well done");
- 
+   
     // Establish the subscribe event
-    mqttClient.setCallback(subscribeReceive);
-  } 
-  else 
-  {
-    Serial.println("Looks like the server connection failed...");
-  }
+  mqttClient.setCallback(subscribeReceive);
+
   
 }
 
@@ -84,12 +87,12 @@ void loop(){
   mqttClient.loop();
  
   // Ensure that we are subscribed to the topic "MakerIOTopic"
-  mqttClient.subscribe("MakerIOTopic/message");
+  mqttClient.subscribe("GreenFarm/Raspberry");
  
   // Attempt to publish a value to the topic "MakerIOTopic"
-  if(mqttClient.publish("MakerIOTopic/message", "Arduino publish"))
+  if(mqttClient.publish("Raspberry/Arduino", "Arduino publish"))
   {
-    Serial.println("Publish message success");
+    Serial.println("published message");
   }
   else
   {
@@ -109,11 +112,11 @@ void loop(){
 void subscribeReceive(char* topic, byte* payload, unsigned int length)
 {
   // Print the topic
-  Serial.print("Topic: ");
-  Serial.println(topic);
+  //Serial.print("Topic: ");
+  //Serial.println(topic);
  
   // Print the message
-  Serial.print("Message: ");
+  Serial.print("Received Message: ");
   for(int i = 0; i < length; i ++)
   {
     Serial.print(char(payload[i]));
