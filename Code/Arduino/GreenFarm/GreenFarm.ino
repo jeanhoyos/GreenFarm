@@ -31,6 +31,12 @@ const char *pub_moist = "GreenFarm/Arduino/Moist";
 char *sub_window = "GreenFarm/Raspberry/Window  ";
 char *sub_pump = "GreenFarm/Raspberry/Pump";
 
+//Arduino 
+
+// constants won't change. Used here to set a pin number:
+const int ledPin = 2;// the number of the LED pin
+// Variables will change:
+int ledState = LOW;             // ledState used to set the LED
 
 
 
@@ -39,6 +45,9 @@ void setup(){
     // Useful for debugging purposes
   Serial.begin(9600);
 
+
+  // set the digital pin as output:
+  pinMode(ledPin, OUTPUT);
 
 /**
  *  Ethernet and Mqtt server
@@ -128,8 +137,20 @@ void loop(){
 
 
 void pump_control(String data){
-     int pump_value = data.toInt();
-     Serial.println(pump_value);
+    int pump_value = data.toInt();
+    Serial.println(pump_value);
+
+    if (ledState == LOW) {
+      ledState = HIGH;
+    } else {
+      ledState = LOW;
+    }
+
+    Serial.print("Led state = ");
+    Serial.println(ledState);
+
+    // set the LED with the ledState of the variable:
+    digitalWrite(ledPin, ledState);
   
   }
 
