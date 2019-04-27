@@ -111,8 +111,8 @@ void loop(){
   Serial.println("%");
  
   // Publish Temperature on Server"
-  String temp_str = "";
-  temp_str = (String)sensorValue_map;
+  
+  String temp_str = (String)sensorValue_map;
   char char_array[temp_str.length() + 1];
   temp_str.toCharArray(char_array, temp_str.length() + 1);
   if(mqttClient.publish(pub_temp, char_array))
