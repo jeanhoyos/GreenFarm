@@ -27,12 +27,18 @@ def read_data():
     data = c.fetchall()
     for row in data:
         print(row)
-    print("ye")    
+    print("ye")
+
+def insert_value():
+    val1 = random.randrange(1,10)
+    val2 = random.randrange(1,8)
+    c.execute(" INSERT INTO Valeurs(humidité , °C ) VALUES (? , ?) "   , (val1,val2))
+    conn.commit()
 
 
 #### MAIN
 Create_table()
-del_value()
+#del_value()
 
 for i in range(5):
     random_value()

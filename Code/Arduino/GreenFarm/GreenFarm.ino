@@ -17,7 +17,7 @@ IPAddress ip(192, 168, 1, 21);
 // Make sure to leave out the http and slashes!
 //const char* server = "test.mosquitto.org";
 const char *serverHostname = "raspberrypi";
-const IPAddress serverIPAddress(192, 168, 1, 4);
+const IPAddress serverIPAddress(192, 168, 1, 5);
 
 EthernetClient ethClient;
 PubSubClient mqttClient(ethClient);
@@ -115,7 +115,7 @@ void loop(){
   String temp_str = (String)sensorValue_map;
   char char_array[temp_str.length() + 1];
   temp_str.toCharArray(char_array, temp_str.length() + 1);
-  if(mqttClient.publish(pub_temp, char_array))
+  if(mqttClient.publish(pub_moist, char_array))
   {
     Serial.println("published message");
   }
@@ -127,7 +127,7 @@ void loop(){
   
  
   // Dont overload the server!
-  delay(4000);
+  delay(10000);
     
 
 
