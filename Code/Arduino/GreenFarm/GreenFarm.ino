@@ -118,6 +118,7 @@ void loop(){
   if(mqttClient.publish(pub_moist, char_array))
   {
     Serial.println("published message");
+    Serial.println(pub_moist);
   }
   else
   {

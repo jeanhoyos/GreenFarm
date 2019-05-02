@@ -11,8 +11,9 @@ time = [];
    
    
 plot_GLOBAL = True
-   
-def read_data():
+
+
+def plot_data():
     #c.execute(""" SELECT * FROM Valeurs WHERE °C > 0 """)
     c.execute(""" SELECT * FROM GF_Value """)
     data = c.fetchall()
@@ -45,6 +46,4 @@ def read_data():
         plt.plot(time,temp)
         plt.show()
         
-        
-read_data()
-        
+#plot_data()        
