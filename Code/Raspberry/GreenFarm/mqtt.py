@@ -32,7 +32,17 @@ def On_message(client,userdata,msg):
     print("message received",m_decode)
     print(topic)
     if topic == "GreenFarm/Arduino/Moist":
-        SQLInit.moist_sql(m_decode)
+        if (m_decode == "1"):
+            print("Glitch value stopped")
+        else:
+            SQLInit.moist_sql(m_decode)
+    elif topic == "GreenFarm/Arduino/Temperature":
+        print("Temperature = ")
+        print(m_decode)
+        
+    elif topic == "GreenFarm/Arduino/Humidity":
+        print("Humidity = ")
+        print(m_decode)        
     
 
     
@@ -51,6 +61,8 @@ def init():
     client.loop_start()
     
     client.subscribe("GreenFarm/Arduino/Moist")
+    client.subscribe("GreenFarm/Arduino/Temperature")
+    client.subscribe("GreenFarm/Arduino/Humidity")
     time.sleep(2)
     print("Initialized", broker)
 
@@ -58,34 +70,5 @@ def connect():
     client.connect(broker)
     print("Connected")
     
-def start():
-    
-    client.loop_forever()
-    print("Started to listen")
 
 
-
-#connect()
-#init()
-#start()
-
-#client.loop_start()
-#time.sleep(4)
-#lient.loop_stop()
-#print("stopped")
-
-"""
-SQL
-"""
-
-
-#read_data()
-#c.close()
-#conn.close()
-
-
-
-#time.sleep(4)
-
-
-#client.disconnect()

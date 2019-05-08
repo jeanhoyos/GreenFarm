@@ -11,10 +11,10 @@ c = conn.cursor()
 
 ### Fonction SQL
 def Create_table():
-    c.execute("CREATE TABLE IF NOT EXISTS GF_Value(humidity REAL ,temperature  REAL, moisture REAL) ")
+    c.execute("CREATE TABLE IF NOT EXISTS GF_Value(id INT AUTO_INCREMENT PRIMARY KEY, humidity REAL ,temperature  REAL, moisture REAL, cur_timestamp TIMESTAMP(8))")
 
 def del_value():
-    c.execute("DELETE FROM Values")
+    c.execute("DELETE FROM GF_Values")
     conn.commit()
 
    
@@ -47,8 +47,9 @@ def insert_value(hum, temp, moist):
 
     print("Moist = ", moist)
     c.execute(" INSERT INTO GF_Value(humidity , temperature, moisture) VALUES (? , ?, ?) "   , (hum,temp,moist)) 
-    print("Inserted")
     conn.commit()
     
     #print("Read value = ")
+def get_avg_moist_10():
+    ("")
     

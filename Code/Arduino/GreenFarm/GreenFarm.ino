@@ -4,6 +4,9 @@
 #include <Ethernet.h>
 #include <PubSubClient.h>
 
+//DTH22
+#include <Adafruit_Sensor.h>
+#include <DHT.h>
 
 // Function prototypes
 void subscribeReceive(char* topic, byte* payload, unsigned int length);
@@ -17,7 +20,7 @@ IPAddress ip(192, 168, 1, 21);
 // Make sure to leave out the http and slashes!
 //const char* server = "test.mosquitto.org";
 const char *serverHostname = "raspberrypi";
-const IPAddress serverIPAddress(192, 168, 1, 5);
+const IPAddress serverIPAddress(192, 168, 1, 2);
 
 EthernetClient ethClient;
 PubSubClient mqttClient(ethClient);
@@ -28,8 +31,9 @@ const char *pub_temp = "GreenFarm/Arduino/Temperature";
 const char *pub_hum = "GreenFarm/Arduino/Humidity";
 const char *pub_moist = "GreenFarm/Arduino/Moist";
 
-char *sub_window = "GreenFarm/Raspberry/Window  ";
-char *sub_pump = "GreenFarm/Raspberry/Pump";
+
+const char *sub_window = "GreenFarm/Raspberry/Window  ";
+const char *sub_pump = "GreenFarm/Raspberry/Pumping";
 
 //Arduino 
 
@@ -38,6 +42,12 @@ const int ledPin = 2;// the number of the LED pin
 // Variables will change:
 int ledState = LOW;             // ledState used to set the LED
 
+//Constants DTH22
+#define DHTPIN 2     // what pin we're connected to
+#define DHTTYPE DHT22   // DHT 22  (AM2302)
+DHT dht(DHTPIN, DHTTYPE); //// Initialize DHT sensor for normal 16mhz Arduino
+
+
 
 
 void setup(){
@@ -45,7 +55,7 @@ void setup(){
     // Useful for debugging purposes
   Serial.begin(9600);
 
-
+  dht.begin();
   // set the digital pin as output:
   pinMode(ledPin, OUTPUT);
 
@@ -107,23 +117,66 @@ void loop(){
   int sensorValue = analogRead(A0);
   int sensorValue_map = map(sensorValue, 1023, 0, 0, 100);
   // print out the value you read:
+  Serial.print("Humidity: ");
   Serial.print(sensorValue_map);
   Serial.println("%");
+
+    //Read data and store it to variables hum and temp
+    float hum;  //Stores humidity value
+    float temp; //Stores temperature value
+    hum = dht.readHumidity();
+    temp= dht.readTemperature();
+    //Print temp and humidity values to serial monitor
+    Serial.print("Humidity: ");
+    Serial.print(hum);
+    Serial.print(" %, Temp: ");
+    Serial.print(temp);
+    Serial.println(" Celsius"); 
  
-  // Publish Temperature on Server"
+  // Publish Moisture on Server"
   
-  String temp_str = (String)sensorValue_map;
-  char char_array[temp_str.length() + 1];
-  temp_str.toCharArray(char_array, temp_str.length() + 1);
-  if(mqttClient.publish(pub_moist, char_array))
+  String moist_str = (String)sensorValue_map;
+  char moist_char[moist_str.length() + 1];
+
+  String hum_str = (String)hum;
+  char hum_char[hum_str.length()+1];
+ 
+  String temp_str = (String)temp;
+  char temp_char[temp_str.length()+1];
+ 
+  
+  if(mqttClient.publish(pub_moist, moist_char))
   {
     Serial.println("published message");
     Serial.println(pub_moist);
   }
   else
   {
-    Serial.println("Could not send message :(");
+    Serial.println("Could not send moist message :(");
   }
+  // Publish Temperature on Server"
+    if(mqttClient.publish(pub_temp, temp_char))
+  {
+    Serial.println("published message");
+    Serial.println(pub_temp);
+  }
+  else
+  {
+    Serial.println("Could not send temp message :(");
+  }
+  // Publish Humidity on Server"
+ 
+   
+    if(mqttClient.publish(pub_hum, temp_char))
+  {
+    Serial.println("published message");
+    Serial.println(pub_hum);
+  }
+  else
+  {
+    Serial.println("Could not send hum message :(");
+  }
+  
 
   
  
@@ -175,7 +228,7 @@ void subscribeReceive(char* topic, byte* payload, unsigned int length)
   Serial.println(value);
 
  
-  if (strcmp (topic,"GreenFarm/Raspberry/Pump") == 0){
+  if (strcmp (topic,"GreenFarm/Raspberry/Pumping") == 0){
     pump_control(value);
     Serial.println("Received Pump order");
     }
