@@ -29,20 +29,19 @@ def On_Disconnect(client, userdata, flags, rc=0):
 def On_message(client,userdata,msg):
     topic=msg.topic
     m_decode=str(msg.payload.decode("utf-8"))
-    print("message received",m_decode)
-    print(topic)
     if topic == "GreenFarm/Arduino/Moist":
+        print("Moist = ", m_decode)
         if (m_decode == "1"):
             print("Glitch value stopped")
         else:
             SQLInit.moist_sql(m_decode)
     elif topic == "GreenFarm/Arduino/Temperature":
-        print("Temperature = ")
-        print(m_decode)
+        print("Temperature = ", m_decode)
+        SQLInit.temp_sql(m_decode)
         
     elif topic == "GreenFarm/Arduino/Humidity":
-        print("Humidity = ")
-        print(m_decode)        
+        print("Humidity = ", m_decode)
+        SQLInit.hum_sql(m_decode)
     
 
     

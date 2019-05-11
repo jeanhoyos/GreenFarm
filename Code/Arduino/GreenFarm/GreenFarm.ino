@@ -137,13 +137,17 @@ void loop(){
   
   String moist_str = (String)sensorValue_map;
   char moist_char[moist_str.length() + 1];
+  moist_str.toCharArray(moist_char, moist_str.length() + 1);
 
   String hum_str = (String)hum;
   char hum_char[hum_str.length()+1];
+  hum_str.toCharArray(hum_char, hum_str.length() + 1);
+
  
   String temp_str = (String)temp;
   char temp_char[temp_str.length()+1];
- 
+  temp_str.toCharArray(temp_char, temp_str.length() + 1);
+
   
   if(mqttClient.publish(pub_moist, moist_char))
   {
@@ -167,7 +171,7 @@ void loop(){
   // Publish Humidity on Server"
  
    
-    if(mqttClient.publish(pub_hum, temp_char))
+    if(mqttClient.publish(pub_hum, hum_char))
   {
     Serial.println("published message");
     Serial.println(pub_hum);

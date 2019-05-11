@@ -18,7 +18,7 @@ print("Start")
 #SQL
 SQLInit.Create_table()
 # Plot previous data
-plotSql.plot_data()  # carefull you have to close the window to receive data
+#plotSql.plot_data()  # carefull you have to close the window to receive data
 
 #MQTT
 
