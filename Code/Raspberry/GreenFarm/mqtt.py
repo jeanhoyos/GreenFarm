@@ -44,8 +44,10 @@ def On_message(client,userdata,msg):
         SQLInit.hum_sql(m_decode)
     
 
-    
-    
+def send_pump_command(pump_data):
+    client.publish("GreenFarm/Raspberry/Pumping",pump_data)
+    print("publish ppudmp data")
+    print(pump_data)
 
 """
 MQTT server connection

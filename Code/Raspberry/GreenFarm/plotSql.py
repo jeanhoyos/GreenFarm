@@ -45,4 +45,4 @@ def plot_data():
         #plt.plot(time,temp)
         plt.show()
         
-plot_data()        
+#plot_data()        

@@ -4,7 +4,7 @@ import sqlite3
 import plotSql
 import datetime
 import time
-
+import numpy as np
 ##### creez connection 
 conn = sqlite3.connect("GreenFarm.db", check_same_thread=False)
 c = conn.cursor()
@@ -16,10 +16,10 @@ moist_global = 0
 
 ### Fonction SQL
 def Create_table():
-    c.execute("CREATE TABLE IF NOT EXISTS GF_Value(id INT AUTO_INCREMENT PRIMARY KEY, humidity REAL ,temperature  REAL, moisture REAL, cur_timestamp TIMESTAMP(8))")
+    c.execute("CREATE TABLE IF NOT EXISTS GF_Value(id integer PRIMARY KEY, humidity REAL ,temperature  REAL, moisture REAL, cur_timestamp TIMESTAMP(8))")
 
 def del_value():
-    c.execute("DELETE FROM GF_Values")
+    c.execute("DELETE FROM GF_Value")
     conn.commit()
 
    
@@ -88,5 +88,13 @@ def insert_value(hum, temp, moist):
     
     #print("Read value = ")
 def get_avg_moist_10():
-    ("")
+    c.execute("select moisture from GF_Value order by id desc limit 3")
     
+    moist_list=c.fetchall()
+    moist_clean_list = []
+    for row in moist_list:
+        print(row[0])
+        moist_clean_list.append(row[0])
+    avg = np.average(moist_clean_list)
+    print("moyenne de :" , avg)
+    return avg

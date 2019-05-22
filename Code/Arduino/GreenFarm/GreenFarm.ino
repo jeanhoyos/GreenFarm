@@ -1,4 +1,4 @@
-//#include <ArduinoNATS.h>
+ //#include <ArduinoNATS.h>
 
 #include <SPI.h>
 #include <Ethernet.h>
@@ -38,7 +38,7 @@ const char *sub_pump = "GreenFarm/Raspberry/Pumping";
 //Arduino 
 
 // constants won't change. Used here to set a pin number:
-const int ledPin = 2;// the number of the LED pin
+const int ledPin = 13;// the number of the LED pin
 // Variables will change:
 int ledState = LOW;             // ledState used to set the LED
 
@@ -117,9 +117,9 @@ void loop(){
   int sensorValue = analogRead(A0);
   int sensorValue_map = map(sensorValue, 1023, 0, 0, 100);
   // print out the value you read:
-  Serial.print("Humidity: ");
+  Serial.print("Moisture: ");
   Serial.print(sensorValue_map);
-  Serial.println("%");
+  Serial.print("%,");
 
     //Read data and store it to variables hum and temp
     float hum;  //Stores humidity value
@@ -127,11 +127,13 @@ void loop(){
     hum = dht.readHumidity();
     temp= dht.readTemperature();
     //Print temp and humidity values to serial monitor
-    Serial.print("Humidity: ");
+    Serial.print(" Humidity: ");
     Serial.print(hum);
     Serial.print(" %, Temp: ");
     Serial.print(temp);
     Serial.println(" Celsius"); 
+    Serial.print("Connection status = ")
+    Serial.println(mqttClient.connect("myClientID"));
  
   // Publish Moisture on Server"
   
@@ -195,20 +197,25 @@ void loop(){
 
 
 void pump_control(String data){
+    Serial.println(data);
     int pump_value = data.toInt();
     Serial.println(pump_value);
+    
 
-    if (ledState == LOW) {
-      ledState = HIGH;
-    } else {
-      ledState = LOW;
-    }
 
-    Serial.print("Led state = ");
-    Serial.println(ledState);
-
+    if (pump_value == 1) {
     // set the LED with the ledState of the variable:
-    digitalWrite(ledPin, ledState);
+    Serial.print("Pump On");
+    digitalWrite(ledPin, HIGH);
+    delay(5000);
+    digitalWrite(ledPin, LOW);        
+
+    } else if (pump_value == 0){
+     digitalWrite(ledPin, LOW);
+     Serial.print("Pump Off "); 
+    } 
+
+
   
   }
 
@@ -221,12 +228,14 @@ void subscribeReceive(char* topic, byte* payload, unsigned int length)
   // Print the message
   Serial.print("Received Message: ");
   //char *data = "";
-  String value = "";
+  int value = int(payload[0]) - 48;
+  /*
   for(int i = 0; i < length; i ++)
   {
-    //Serial.print(char(payload[i]));
+    Serial.print(int(payload[i]));
     value += char(payload[i]);
   }
+  */
   Serial.println("");
   Serial.print("Data = ");
   Serial.println(value);

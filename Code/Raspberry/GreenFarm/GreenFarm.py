@@ -35,9 +35,9 @@ Main used to check that connection is maintained. Relaunch if necessary
 while(True):
     print("Listening")
     
-    #MoistControl.control_moisture()
+    MoistControl.control_moisture()
     
-    time.sleep(4)
+    time.sleep(10)
     
     
     
